@@ -16,6 +16,7 @@ def test_unregister_participant_removes_from_activity():
     assert email not in activities[activity_name]["participants"]
     assert response.json()["message"] == f"Unregistered {email} from {activity_name}"
 
+    # Restore state for future tests
     activities[activity_name]["participants"].append(email)
 
 

@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const participantsMarkup = participants.length > 0
           ? `<div class="participants-section">
               <h5>Participants</h5>
-              <ul class="participants-list">
+              <div class="participants-list">
                 ${participants.map((participant) => `
-                  <li class="participant-item" data-activity="${name}" data-email="${participant}">
-                    <span class="participant-name">${participant}</span>
+                  <div class="participant-pill" data-activity="${name}" data-email="${participant}">
+                    <span>${participant}</span>
                     <button type="button" class="participant-delete" aria-label="Remove ${participant}" title="Remove ${participant}">×</button>
-                  </li>`).join("")}
-              </ul>
+                  </div>`).join("")}
+              </div>
             </div>`
           : `<div class="participants-section empty">
               <h5>Participants</h5>
@@ -61,19 +61,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function refreshActivities() {
+    await fetchActivities();
+  }
+
+  // Handle removing a participant
   activitiesList.addEventListener("click", async (event) => {
     const deleteButton = event.target.closest(".participant-delete");
     if (!deleteButton) {
       return;
     }
 
-    const participantItem = deleteButton.closest(".participant-item");
-    if (!participantItem) {
+    const participantPill = deleteButton.closest(".participant-pill");
+    if (!participantPill) {
       return;
     }
 
-    const activityName = participantItem.dataset.activity;
-    const email = participantItem.dataset.email;
+    const activityName = participantPill.dataset.activity;
+    const email = participantPill.dataset.email;
 
     try {
       const response = await fetch(`/activities/${encodeURIComponent(activityName)}/participants/${encodeURIComponent(email)}`, {
@@ -85,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
-        await fetchActivities();
+        await refreshActivities();
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
