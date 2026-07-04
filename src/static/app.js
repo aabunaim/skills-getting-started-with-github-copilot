@@ -24,13 +24,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const participantsMarkup = participants.length > 0
           ? `<div class="participants-section">
               <h5>Participants</h5>
-              <div class="participants-list">
+              <ul class="participants-list">
                 ${participants.map((participant) => `
-                  <div class="participant-pill" data-activity="${name}" data-email="${participant}">
-                    <span>${participant}</span>
+                  <li class="participant-item" data-activity="${name}" data-email="${participant}">
+                    <span class="participant-name">${participant}</span>
                     <button type="button" class="participant-delete" aria-label="Remove ${participant}" title="Remove ${participant}">×</button>
-                  </div>`).join("")}
-              </div>
+                  </li>`).join("")}
+              </ul>
             </div>`
           : `<div class="participants-section empty">
               <h5>Participants</h5>
@@ -67,13 +67,13 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const participantPill = deleteButton.closest(".participant-pill");
-    if (!participantPill) {
+    const participantItem = deleteButton.closest(".participant-item");
+    if (!participantItem) {
       return;
     }
 
-    const activityName = participantPill.dataset.activity;
-    const email = participantPill.dataset.email;
+    const activityName = participantItem.dataset.activity;
+    const email = participantItem.dataset.email;
 
     try {
       const response = await fetch(`/activities/${encodeURIComponent(activityName)}/participants/${encodeURIComponent(email)}`, {
